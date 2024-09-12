@@ -3,6 +3,7 @@ import { AuthForm } from '../AuthForm';
 import { Loader } from '../Loader';
 import { LogoutButton } from '../LogoutButton';
 import { NoteForm } from '../NoteForm';
+import { FetchNotesListView } from '../NotesListView/FetchNotesListView';
 import { fetchMe } from '../api/User';
 
 export const Account = () => {
@@ -23,6 +24,7 @@ export const Account = () => {
 			return (
 				<>
 					<NoteForm />
+					<FetchNotesListView />
 					<LogoutButton />
 				</>
 			);

@@ -1,16 +1,22 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from 'react-query';
 import { z } from 'zod';
 import { Button } from '../Button';
 import { FormField } from '../FormField';
-import { registerUser } from '../api/User';
+import {
+	emailTemplate,
+	passwordTemplate,
+	registerUser,
+	usernameTemplate,
+} from '../api/User';
 import './RegisterForm.css';
 
 const CreateRegisterSchema = z.object({
-	username: z.string().min(5),
-	email: z.string().email(),
-	password: z.string().min(8),
+	username: usernameTemplate,
+	email: emailTemplate,
+	password: passwordTemplate,
 });
 
 type CreateRegisterForm = z.infer<typeof CreateRegisterSchema>;
@@ -22,11 +28,13 @@ export const RegisterForm = () => {
 		register,
 		handleSubmit,
 		formState: { errors },
-		setError,
+		watch,
 		reset,
 	} = useForm<CreateRegisterForm>({
 		resolver: zodResolver(CreateRegisterSchema),
 	});
+
+	const [serverError, setServerError] = useState<string | null>(null);
 
 	const createRegisterMutation = useMutation({
 		mutationFn: registerUser,
@@ -34,11 +42,18 @@ export const RegisterForm = () => {
 			queryClient.invalidateQueries({ queryKey: ['users'] });
 		},
 		onError: (error: Response) => {
-			setError('root', { message: error.toString().slice(7) });
-
-			reset({ username: '', email: '', password: '' }, { keepErrors: true });
+			reset();
+			setServerError(error.toString().slice(7));
 		},
 	});
+
+	const usernameValue = watch('username');
+	const emailValue = watch('email');
+	const passwordValue = watch('password');
+
+	useEffect(() => {
+		if (usernameValue || emailValue || passwordValue) setServerError(null);
+	}, [usernameValue, emailValue, passwordValue]);
 
 	return (
 		<form
@@ -47,6 +62,7 @@ export const RegisterForm = () => {
 				createRegisterMutation.mutate(data);
 			})}
 		>
+			{serverError && <p className='error-message'>{serverError}</p>}
 			<FormField label='Имя' errorMessage={errors.username?.message}>
 				<input type='text' {...register('username')} />
 			</FormField>
