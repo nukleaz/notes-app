@@ -1,17 +1,13 @@
 import { z } from 'zod';
 import { validateResponse } from './validateResponse';
 
-export const emailTemplate = z.string().email('Неккоректный формат email');
-export const usernameTemplate = z.string().min(5, 'Минимум 5 символом');
-export const passwordTemplate = z.string().min(8, 'Минимум 8 символов');
-
 const UserSchema = z.object({
 	id: z.string(),
-	email: emailTemplate,
-	username: usernameTemplate,
+	email: z.string().email(),
+	username: z.string().min(5),
 });
 
-type TUser = z.infer<typeof UserSchema>;
+export type User = z.infer<typeof UserSchema>;
 
 export function registerUser(data: {
 	username: string;
@@ -52,7 +48,7 @@ export function loginUser(data: {
 		.then(() => undefined);
 }
 
-export function fetchMe(): Promise<TUser> {
+export function fetchMe(): Promise<User> {
 	return fetch('/api/users/me')
 		.then(validateResponse)
 		.then(response => response.json())

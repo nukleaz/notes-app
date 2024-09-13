@@ -25,7 +25,10 @@ export const LogoutButton = () => {
 			<Button
 				type='button'
 				kind='secondary'
-				onClick={() => logoutMutation.mutate()}
+				onClick={() => {
+					setErrorMessage(null);
+					logoutMutation.mutate();
+				}}
 				isLoading={logoutMutation.isLoading}
 			>
 				Выйти

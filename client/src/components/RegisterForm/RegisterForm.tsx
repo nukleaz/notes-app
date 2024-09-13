@@ -5,18 +5,13 @@ import { useMutation, useQueryClient } from 'react-query';
 import { z } from 'zod';
 import { Button } from '../Button';
 import { FormField } from '../FormField';
-import {
-	emailTemplate,
-	passwordTemplate,
-	registerUser,
-	usernameTemplate,
-} from '../api/User';
+import { registerUser } from '../api/User';
 import './RegisterForm.css';
 
 const CreateRegisterSchema = z.object({
-	username: usernameTemplate,
-	email: emailTemplate,
-	password: passwordTemplate,
+	username: z.string().min(5, 'Минимум 5 символов'),
+	email: z.string().email('Неккоректный формат email'),
+	password: z.string().min(8, 'Минимум 8 символом'),
 });
 
 type CreateRegisterForm = z.infer<typeof CreateRegisterSchema>;
