@@ -1,6 +1,20 @@
 .app {
-  height: 100%;
-  background: url("./assets/note.svg") space;
-  background-size: 24px;
-  color: var(--text-primary);
+	display: flex;
+	padding: 15px;
+	height: 100%;
+	background: url('./assets/note.svg') space;
+	background-size: 24px;
+	color: var(--text-primary);
+}
+
+.error-message {
+	font-size: 14px;
+	color: red;
+}
+
+.notes-wrapper {
+	display: flex;
+	gap: 20px;
+	margin: 0 auto;
+	width: 75%;
 }
